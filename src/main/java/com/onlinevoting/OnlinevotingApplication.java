@@ -7,8 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class OnlinevotingApplication {
 
 	public static void main(String[] args) {
-
-        SpringApplication.run(OnlinevotingApplication.class, args);
+		SpringApplication.run(OnlinevotingApplication.class, args);
 	}
 
 }
