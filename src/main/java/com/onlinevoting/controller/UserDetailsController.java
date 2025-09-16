@@ -10,4 +10,6 @@ public class UserDetailsController {
     public String getData(){
         return "swamini";
     }
+
+    
 }
