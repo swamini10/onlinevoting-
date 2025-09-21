@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import java.sql.Date;
 
 @Entity
+@Table(name = "user_detail")
 public class UserDetail extends AuditDetail {
 
     @Id

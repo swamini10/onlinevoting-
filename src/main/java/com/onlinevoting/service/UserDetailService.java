@@ -5,12 +5,14 @@ import com.onlinevoting.model.UserDetail;
 import com.onlinevoting.repository.UserDetailRepository;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserDetailService {
+
      @Autowired
      private UserDetailRepository userDetailRepository;
 
@@ -42,5 +44,41 @@ public class UserDetailService {
 
      public UserDetail getUserByEmail(String email) {
           return userDetailRepository.findByEmailId(email);
+     }
+
+     public UserDetail updateUser(UserDetail userDetail) {
+          var id = userDetail.getId();
+
+          Optional<UserDetail> existingUserDetail = userDetailRepository.findById(id);
+          
+          if (existingUserDetail.isEmpty()) {
+               throw new IllegalArgumentException("User with account for ID " + id + " does not exist.");
+          }
+
+          UserDetail user = existingUserDetail.get();
+          user.setFirstName(userDetail.getFirstName());
+          user.setLastName(userDetail.getLastName());
+          user.setMiddleName(userDetail.getMiddleName());
+          user.setPhoneNo(userDetail.getPhoneNo());
+          user.setAddress(userDetail.getAddress());
+          user.setDob(userDetail.getDob());
+          user.setAadharNumber(userDetail.getAadharNumber());
+          user.setPhoto(userDetail.getPhoto());
+
+          return userDetailRepository.save(user);
+          
+     }
+
+     public void deleteUser(Long id) {
+
+          Optional<UserDetail> existingUserDetail = userDetailRepository.findByIdAndIsActiveTrue(id);
+          
+          if (existingUserDetail.isEmpty()) {
+               throw new IllegalArgumentException("User with account for ID " + id + " does not exist.");
+          }
+
+          UserDetail userDetail = existingUserDetail.get();
+          userDetail.setActive(false);
+          userDetailRepository.save(userDetail);
      }
 }

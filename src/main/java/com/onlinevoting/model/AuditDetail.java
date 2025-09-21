@@ -18,7 +18,7 @@ public class AuditDetail {
         this.createdBy = "system"; // or get from security context
         this.createdDate = LocalDateTime.now();
         this.updatedDate = LocalDateTime.now();
-        // this.isActive = true;
+        this.isActive = true;
     }
 
     @PreUpdate
