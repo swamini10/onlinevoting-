@@ -1,0 +1,1 @@
+INSERT INTO states(name,country_id) values ("Maharashtra",1), ("Karnataka",1), ("Goa",1);
