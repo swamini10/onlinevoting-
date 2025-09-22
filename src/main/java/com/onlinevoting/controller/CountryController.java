@@ -23,7 +23,7 @@ public class CountryController {
         this.countryService = countryService;
     }
 
-    @GetMapping("/list")
+    @GetMapping(path = "/list", produces = { "application/json" })
     public ResponseEntity<ApiResponse<List<Country>>> getCountries() {
         return ResponseEntity.ok(new ApiResponse<>(true, countryService.getAll(), null));
     }
