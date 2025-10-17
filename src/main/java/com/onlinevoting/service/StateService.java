@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.onlinevoting.dto.StateDTO;
+import com.onlinevoting.dto.BaseDTO;
 import com.onlinevoting.model.State;
 import com.onlinevoting.repository.StateRepository;
 
@@ -17,13 +17,12 @@ public class StateService {
         this.stateRepository = stateRepository;
     }
 
-    public List<StateDTO> getAll() {
-        List<State> list = stateRepository.findAll();
-        List<StateDTO> dtoList = new ArrayList<>();
-        
+    public List<BaseDTO> getStatesByCountryId(Long countryId) {
+        List<State> list = stateRepository.findByCountryId(countryId);
+        List<BaseDTO> dtoList = new ArrayList<>();
+
         for (State state : list) {
-            StateDTO dto = new StateDTO(state.getId(), state.getName(), 
-            state.geCountry().getId());
+            BaseDTO dto = new BaseDTO(state.getId(),state.getName());
             dtoList.add(dto);
         }
 

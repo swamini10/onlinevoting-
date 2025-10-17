@@ -4,15 +4,16 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.onlinevoting.dto.ApiResponse;
-import com.onlinevoting.dto.StateDTO;
+import com.onlinevoting.dto.BaseDTO;
 import com.onlinevoting.service.StateService;
 
 @RestController
-@RequestMapping("/v1/state")    
+@RequestMapping("/v1/states")    
 public class StateController {
 
     private final StateService stateService;
@@ -21,9 +22,9 @@ public class StateController {
         this.stateService = stateService;
     }
     
-    @GetMapping(path = "/list", produces = { "application/json" })
-    public ResponseEntity<ApiResponse<List<StateDTO>>> getStates() {
-        return ResponseEntity.ok(new ApiResponse<>(true, stateService.getAll(), null));
+    @GetMapping(path = "/by-country/{countryId}", produces = { "application/json" })
+    public ResponseEntity<ApiResponse<List<BaseDTO>>> getStatesByCountryId(@PathVariable Long countryId) {
+        return ResponseEntity.ok(new ApiResponse<>(true, stateService.getStatesByCountryId(countryId), null));
     }
 
 }

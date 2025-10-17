@@ -7,9 +7,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "states")
+@Getter
+@Setter
 public class State {
 
     @Id
@@ -22,17 +26,8 @@ public class State {
     private Country country;
 
     private Boolean isActive;
+    
+    public State() {
+    }
 
-    public Long getId() {
-        return id;
-    }
-    public String getName() {
-        return name;
-    }
-    public Boolean getIsActive() {
-        return isActive;
-    }
-    public Country geCountry() {
-        return country;
-    }
 }
