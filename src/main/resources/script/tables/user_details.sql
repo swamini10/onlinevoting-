@@ -6,7 +6,7 @@ CREATE TABLE `user_detail` (
   `update_by` varchar(255) DEFAULT NULL,
   `updated_date` datetime(6) DEFAULT NULL,
   `aadhar_number` bigint NOT NULL,
-  `address` varchar(255) NOT NULL,
+  `address_id` bigint NOT NULL,
   `dob` date NOT NULL,
   `email_id` varchar(255) NOT NULL,
   `first_name` varchar(255) NOT NULL,
@@ -14,5 +14,6 @@ CREATE TABLE `user_detail` (
   `middle_name` varchar(255) DEFAULT NULL,
   `phone_no` varchar(255) DEFAULT NULL,
   `photo` longblob,
+  `status` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
