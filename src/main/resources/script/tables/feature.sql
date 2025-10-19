@@ -3,6 +3,7 @@ CREATE TABLE `feature` (
   `name` VARCHAR(100) NOT NULL,
   `description` VARCHAR(255) DEFAULT NULL,
   `menuId` BIGINT DEFAULT NULL,
+  `menuName` VARCHAR(100) DEFAULT NULL,
   `url` VARCHAR(255) DEFAULT NULL,
    `icon` VARCHAR(255) DEFAULT NULL,
   `is_active` BIT(1) DEFAULT 1,
