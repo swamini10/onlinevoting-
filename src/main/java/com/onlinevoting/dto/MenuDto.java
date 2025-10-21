@@ -33,6 +33,10 @@ public class MenuDto {
         return subMenus;
     }
     
+    public void setSubMenus(List<MenuDto> subMenus) {
+        this.subMenus = subMenus;
+    }
+    
     // Getters and Setters
     public String getMenuId() {
         return menuId;
