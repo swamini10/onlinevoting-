@@ -16,4 +16,7 @@ INSERT INTO role_feature_mapping(role_id, feature_id, is_active) VALUES
 (5, 18, 1), (5, 19, 1), (5, 13, 1), (5, 14, 1),
 
 -- Observer (role_id=6) - Observation features
-(6, 20, 1), (6, 21, 1), (6, 14, 1);
+(6, 20, 1), (6, 21, 1), (6, 14, 1),
+
+-- Logout feature for all roles
+(1, 22, 1), (2, 22, 1), (3, 22, 1), (4, 22, 1), (5, 22, 1), (6, 22, 1);
