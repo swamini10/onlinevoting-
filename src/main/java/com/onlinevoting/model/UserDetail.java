@@ -1,9 +1,22 @@
 package com.onlinevoting.model;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import java.sql.Date;
 
 import com.onlinevoting.util.DateUtils;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "user_detail")
@@ -60,8 +73,8 @@ public class UserDetail extends AuditDetail {
     public UserDetail(String firstName, String lastName, String middleName, String emailId, String phoneNo, Address address,
                       Date dob, Long aadharNumber, byte[] photo) {
         super();
-        if (firstName == null || firstName.isBlank()) throw new IllegalArgumentException("First name is required");
-        if (lastName == null || lastName.isBlank()) throw new IllegalArgumentException("Last name is required");
+        if (firstName == null || firstName.trim().isBlank()) throw new IllegalArgumentException("First name is required");
+        if (lastName == null || lastName.trim().isBlank()) throw new IllegalArgumentException("Last name is required");
         if (emailId == null || emailId.isBlank()) throw new IllegalArgumentException("Email is required");
         if (!emailId.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) throw new IllegalArgumentException("Invalid email format");
         if (phoneNo != null && !phoneNo.matches("\\d{10}")) throw new IllegalArgumentException("Phone number must be 10 digits");
