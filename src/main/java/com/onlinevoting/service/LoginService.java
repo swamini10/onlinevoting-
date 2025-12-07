@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +41,9 @@ public class LoginService {
     
     @Autowired
     private EmailService emailService;
+
+    @Value("${otp.expiry.minutes:5}")
+    private Long otpExpiryMinutes;
 
     private static final Logger logger = LogManager.getLogger(LoginService.class);
 
@@ -78,7 +82,7 @@ public class LoginService {
            userOtpDetailsRepository.save(newUserOtpDetails);
            
            // to send the email
-           sentEmailToUser(userLoginInfo, userDetail, otp);
+        //    sentEmailToUser(userLoginInfo, userDetail, otp);
          }
 
     }
@@ -101,7 +105,7 @@ public class LoginService {
         LocalDateTime currentDateTime  = LocalDateTime.now();
         LocalDateTime exDateTime  = LocalDateTime.ofInstant(Instant.ofEpochMilli(expiryTime), ZoneId.systemDefault());
        long diffMinutes = Duration.between(exDateTime,currentDateTime ).toMinutes();
-       return Long.valueOf(diffMinutes) >= 5;
+       return Long.valueOf(diffMinutes) >= otpExpiryMinutes;
     }
 
 

@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserDetailsController {
 
     @Autowired
@@ -35,9 +37,9 @@ public class UserDetailsController {
 
     @PostMapping(path = "/v1/user_detail", consumes = { "multipart/form-data" })
     public ResponseEntity<ApiResponse<UserDetail>> createUser(
-            @RequestPart("user") @Valid String userDetail,
+            @RequestPart("user") @Valid String userDetailStr,
             @RequestPart("photo") byte[] profilePhoto) throws Exception {
-        UserDetail detail = new ObjectMapper().readValue(userDetail, UserDetail.class);
+        UserDetail detail = new ObjectMapper().readValue(userDetailStr, UserDetail.class);
         detail.setPhoto(profilePhoto);
         UserDetail savedUser = userDetailService.saveUser(detail);
         ApiResponse<UserDetail> response = new ApiResponse<>(true, savedUser, null);

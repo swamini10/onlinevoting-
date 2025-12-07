@@ -1,0 +1,21 @@
+CREATE TABLE `user_detail` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `created_by` varchar(255) DEFAULT NULL,
+  `created_date` datetime(6) DEFAULT NULL,
+  `is_active` bit(1) DEFAULT NULL,
+  `update_by` varchar(255) DEFAULT NULL,
+  `updated_date` datetime(6) DEFAULT NULL,
+  `aadhar_number` bigint NOT NULL,
+  `address_id` bigint NOT NULL,
+  `dob` date NOT NULL,
+  `email_id` varchar(100) NOT NULL,
+  `first_name` varchar(50) NOT NULL,
+  `last_name` varchar(50) NOT NULL,
+  `middle_name` varchar(50) DEFAULT NULL,
+  `phone_no` varchar(10) DEFAULT NULL,
+  `photo` longblob,
+  `status` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKm3txgmo2pp4a9br200bq9daeg` (`address_id`),
+  CONSTRAINT `FKm3txgmo2pp4a9br200bq9daeg` FOREIGN KEY (`address_id`) REFERENCES `address` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
