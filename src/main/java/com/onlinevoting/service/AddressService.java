@@ -36,6 +36,7 @@ public class AddressService {
     Country country = new Country();
     country.setId(inputAddress.getCountryId());
     address2.setCountryId(country);
+    address2.setActive(true);
 
     return addressRepository.save(address2).getId();
    }    

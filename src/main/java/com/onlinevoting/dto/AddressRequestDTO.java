@@ -16,5 +16,4 @@ public class AddressRequestDTO {
     private Long stateId;
     private String zipCode;
     private Long countryId;
-    private Boolean isActive;
 }
