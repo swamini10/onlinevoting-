@@ -37,13 +37,12 @@ public class UserDetailsController {
 
     @PostMapping(path = "/v1/user_detail", consumes = { "multipart/form-data" })
     public ResponseEntity<ApiResponse<UserDetail>> createUser(
-            @RequestPart("user") @Valid String userDetailStr,
-            @RequestPart("photo") byte[] profilePhoto) throws Exception {
+            @RequestPart("user") @Valid String userDetailStr) throws Exception {
         UserDetail detail = new ObjectMapper().readValue(userDetailStr, UserDetail.class);
-        detail.setPhoto(profilePhoto);
+        // detail.setPhoto(profilePhoto);
         UserDetail savedUser = userDetailService.saveUser(detail);
         ApiResponse<UserDetail> response = new ApiResponse<>(true, savedUser, null);
-        return ResponseEntity.ok(response);
+        return new ResponseEntity(response, null, 201);
     }
 
     // Get API by email id
