@@ -15,6 +15,7 @@ import java.util.Map;
 
 @Component
 public class EmailUtil {
+    
     @Autowired
     private JavaMailSender mailSender;
 

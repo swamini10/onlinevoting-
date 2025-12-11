@@ -15,7 +15,9 @@ CREATE TABLE `user_detail` (
   `phone_no` varchar(10) DEFAULT NULL,
   `photo` longblob,
   `status` varchar(20) DEFAULT NULL,
+  `role_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FKm3txgmo2pp4a9br200bq9daeg` (`address_id`),
+  KEY `FKm3txgo2pp4a9br200bq9daeg_idx` (`role_id`),
   CONSTRAINT `FKm3txgmo2pp4a9br200bq9daeg` FOREIGN KEY (`address_id`) REFERENCES `address` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci

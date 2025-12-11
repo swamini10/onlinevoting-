@@ -4,9 +4,12 @@ import jakarta.validation.constraints.*;
 import java.sql.Date;
 
 import com.onlinevoting.util.DateUtils;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "user_detail")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDetail extends AuditDetail {
 
     @Id
@@ -38,6 +41,10 @@ public class UserDetail extends AuditDetail {
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
+    @OneToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    private UserRole role;
+
     @NotNull(message = "Date of birth is required")
     @Column(name = "dob", nullable = false)
     private Date dob;
@@ -58,7 +65,7 @@ public class UserDetail extends AuditDetail {
     }
 
     public UserDetail(String firstName, String lastName, String middleName, String emailId, String phoneNo, Address address,
-                      Date dob, Long aadharNumber, byte[] photo) {
+                      Date dob, Long aadharNumber, byte[] photo, UserRole role) {
         super();
         if (firstName == null || firstName.isBlank()) throw new IllegalArgumentException("First name is required");
         if (lastName == null || lastName.isBlank()) throw new IllegalArgumentException("Last name is required");
@@ -78,6 +85,7 @@ public class UserDetail extends AuditDetail {
         this.dob = dob;
         this.aadharNumber = aadharNumber;
         this.photo = photo;
+        this.role = role;
     }
 
 
@@ -169,5 +177,15 @@ public class UserDetail extends AuditDetail {
 
     public String getStatus() {
         return status;
+    }
+
+    // Add getter and setter for role so Jackson can (de)serialize it
+    public UserRole getRole() {
+        return role;
+    }
+
+    @JsonProperty("role")
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 }
