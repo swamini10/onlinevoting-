@@ -8,7 +8,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "user_detail")
+@Table(name = "user_detail",uniqueConstraints = {
+        @UniqueConstraint(columnNames = "email_id"),
+        @UniqueConstraint(columnNames = "aadhar_number")
+})
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDetail extends AuditDetail {
 

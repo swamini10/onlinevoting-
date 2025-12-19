@@ -17,7 +17,10 @@ CREATE TABLE `user_detail` (
   `status` varchar(20) DEFAULT NULL,
   `role_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `UKshwj588nqnfg48ov2pb49ibjd` (`email_id`),
+  UNIQUE KEY `UKigwgeaqwgqnqjrkye783rxgcf` (`aadhar_number`),
   KEY `FKm3txgmo2pp4a9br200bq9daeg` (`address_id`),
   KEY `FKm3txgo2pp4a9br200bq9daeg_idx` (`role_id`),
-  CONSTRAINT `FKm3txgmo2pp4a9br200bq9daeg` FOREIGN KEY (`address_id`) REFERENCES `address` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+  CONSTRAINT `FKm3txgmo2pp4a9br200bq9daeg` FOREIGN KEY (`address_id`) REFERENCES `address` (`id`),
+  CONSTRAINT `FKqdet72l3mb0rnjpmxlhgg584c` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

@@ -5,9 +5,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
@@ -82,7 +80,7 @@ public class LoginService {
            userOtpDetailsRepository.save(newUserOtpDetails);
            
            // to send the email
-        //    sentEmailToUser(userLoginInfo, userDetail, otp);
+           sentEmailToUser(userLoginInfo, userDetail, otp);
          }
 
     }

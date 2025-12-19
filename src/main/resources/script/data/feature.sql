@@ -1,4 +1,4 @@
-INSERT INTO feature(id, name, description, menuId, menuName, url, icon, is_active) VALUES 
+INSERT INTO feature(id, name, description, menu_id, menu_name, url, icon, is_active) VALUES 
 -- Admin Features
 (1, 'Dashboard', 'Admin Dashboard', 1, 'Admin Panel', '/admin/dashboard', 'fas fa-tachometer-alt', 1),
 (2, 'User Management', 'Manage all users', 1, 'Admin Panel', '/admin/users', 'fas fa-users', 1),

@@ -7,23 +7,31 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.stereotype.Service;
 
 import com.onlinevoting.dto.MenuDto;
 import com.onlinevoting.model.Feature;
 import com.onlinevoting.model.RoleFeatureMapping;
+import com.onlinevoting.model.UserDetail;
 import com.onlinevoting.repository.FeatureRepository;
 import com.onlinevoting.repository.RoleFeatureMappingRepository;
+import com.onlinevoting.util.UserContextHelper;
 
 @Service
 public class MenuServiceImpl implements MenuService {
     
     private final RoleFeatureMappingRepository roleFeatureMappingRepository;
     private final FeatureRepository featureRepository;
+    private final UserDetailService userDetailService;
+    private final UserContextHelper userContextHelper;
 
-    public MenuServiceImpl(RoleFeatureMappingRepository roleFeatureMappingRepository, FeatureRepository featureRepository) {
+    public MenuServiceImpl(RoleFeatureMappingRepository roleFeatureMappingRepository, FeatureRepository featureRepository, 
+                          UserDetailService userDetailService, UserContextHelper userContextHelper) {
         this.roleFeatureMappingRepository = roleFeatureMappingRepository;
         this.featureRepository = featureRepository;
+        this.userDetailService = userDetailService;
+        this.userContextHelper = userContextHelper;
     }
 
     @Override
@@ -60,6 +68,26 @@ public class MenuServiceImpl implements MenuService {
 
         }
         return menuDtos;
+    }
+
+    @Override
+    public List<MenuDto> getMenuItemsByUserId(String emailId) {
+        List<MenuDto> menuDtos = new ArrayList<>();
+       UserDetail userDetail = userDetailService.getUserByEmail(emailId);
+        if(userDetail != null) {
+            Long roleId = userDetail.getRole().getId();
+            menuDtos =  this.getMenuItemsByRoleId(roleId);
+        }
+        return menuDtos;
+    }
+
+    @Override
+    public List<MenuDto> getMenuItemsForCurrentUser() {
+        String emailId = userContextHelper.getCurrentUserEmail();
+        if (emailId == null || emailId.isEmpty()) {
+            throw new IllegalStateException("No user context found. User must be authenticated.");
+        }
+        return getMenuItemsByUserId(emailId);
     }
     
     private MenuDto convertToMenuDto(Feature feature) {

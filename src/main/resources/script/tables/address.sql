@@ -6,9 +6,9 @@ CREATE TABLE `address` (
   `country_id` bigint NOT NULL,
   `state_id` bigint NOT NULL,
   `zip_code` varchar(255) DEFAULT NULL,
-  `created by` varchar(255) DEFAULT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
   `created_date` datetime(6) DEFAULT NULL,
-  `update by` varchar(255) DEFAULT NULL,
+  `update_by` varchar(255) DEFAULT NULL,
   `updated_date` datetime(6) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKpo044ng5x4gynb291cv24vtea` (`city_id`),
@@ -17,4 +17,4 @@ CREATE TABLE `address` (
   CONSTRAINT `FK1uk1eurcj7mhj5tpql2yurw32` FOREIGN KEY (`state_id`) REFERENCES `states` (`id`),
   CONSTRAINT `FKe54x81nmccsk5569hsjg1a6ka` FOREIGN KEY (`country_id`) REFERENCES `country` (`id`),
   CONSTRAINT `FKpo044ng5x4gynb291cv24vtea` FOREIGN KEY (`city_id`) REFERENCES `city` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
