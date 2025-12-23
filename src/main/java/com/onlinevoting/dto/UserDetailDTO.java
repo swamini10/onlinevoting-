@@ -10,9 +10,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDetailDTO  {
+    private String id;
     private String firstName;
     private String lastName;
     private String emailId;
-    private String id;  
+    private String phoneNumber;
+    private String dateOfBirth;
+    private String aadharNumber;
     private String status;
 }

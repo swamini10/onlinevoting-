@@ -1,6 +1,7 @@
 package com.onlinevoting.service;
 
 import com.onlinevoting.constants.EmailConstants;
+import com.onlinevoting.dto.BaseDTO;
 import com.onlinevoting.dto.UserDetailDTO;
 import com.onlinevoting.enums.Status;
 import com.onlinevoting.model.UserDetail;
@@ -190,7 +191,39 @@ public class UserDetailService {
           return userDetails;
      }
 
-     private UserDetailDTO createUserDetailDTO(Object[] obj) {
-          return new UserDetailDTO((String) obj[0], (String) obj[1], (String) obj[2], String.valueOf(obj[3]), (String) obj[4]);
+      private UserDetailDTO createUserDetailDTO(Object[] obj) {
+            String dobStr = null;
+            if (obj[5] != null && obj[5] instanceof java.sql.Date) {
+                 dobStr = obj[5].toString(); // or use a formatter if you want a specific format
+            } else if (obj[5] != null) {
+                 dobStr = obj[5].toString();
+            }
+            String adharStr = obj[6] != null ? obj[6].toString() : null;
+            return new UserDetailDTO(
+               String.valueOf(obj[0]), // id
+                 (String) obj[1], // firstName
+                 (String) obj[2], // lastName
+                 (String) obj[3], // emailid
+                 (String) obj[4], // phoneNumber
+                 dobStr,          // dateOfBirth as String
+                 adharStr,        // aadharNumber as String
+                 (String) obj[7]  // status
+            );
+      }
+
+      public List<BaseDTO> getAllUsersByRole(Long roleId) {
+          List<BaseDTO> userDetails = new ArrayList<>();
+          log.info("Fetching users with role ID: {}", roleId);
+          List<Object[]> newuserDetails = userDetailRepository.findByIsActiveAndStatusAndRoleId(
+               Boolean.TRUE, Status.APPROVED.getDisplayName(), roleId);
+          for (Object[] obj : newuserDetails) {
+               userDetails.add(new BaseDTO(
+                    obj[0] != null ? Long.parseLong(obj[0].toString()) : null,
+                    obj[1] != null ? obj[1].toString() : null
+               ));
+          }
+          log.info("Found {} users with role ID: {}", userDetails.size(), roleId);
+          return userDetails;
      }
 }
+ 
