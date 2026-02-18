@@ -4,52 +4,71 @@ import jakarta.validation.constraints.*;
 import java.sql.Date;
 
 import com.onlinevoting.util.DateUtils;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "user_detail")
+@Table(name = "user_detail",uniqueConstraints = {
+        @UniqueConstraint(columnNames = "email_id"),
+        @UniqueConstraint(columnNames = "aadhar_number")
+})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDetail extends AuditDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @NotBlank(message = "First name is required")
+    @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
 
     @NotBlank(message = "Last name is required")
+    @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
 
+    @Column(name = "middle_name", length = 50)
     private String middleName;
 
     @Email(message = "Invalid email format")
     @NotBlank(message = "Email is required")
+    @Column(name = "email_id", nullable = false, unique = true, length = 100)
     private String emailId;
 
     @Pattern(regexp = "\\d{10}", message = "Phone number must be 10 digits")
+    @Column(name = "phone_no", length = 10)
     private String phoneNo;
 
     @OneToOne
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
+    @OneToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    private UserRole role;
+
     @NotNull(message = "Date of birth is required")
+    @Column(name = "dob", nullable = false)
     private Date dob;
 
     @NotNull(message = "Aadhar number is required")
     @Digits(integer = 12, fraction = 0, message = "Aadhar number must be 12 digits")
+    @Column(name = "aadhar_number", nullable = false, unique = true)
     private Long  aadharNumber;
 
-    @Lob
-    @Column(name = "photo", columnDefinition = "LONGBLOB")
-    private byte[] photo;
+    @Column(name = "docs_url", length = 512)
+    @NotNull(message = "Documents is required")
+    private String docsUrl;
     
+    @Column(name = "status", length = 20)
     private String status;
 
     public UserDetail() {
     }
 
     public UserDetail(String firstName, String lastName, String middleName, String emailId, String phoneNo, Address address,
-                      Date dob, Long aadharNumber, byte[] photo) {
+                      Date dob, Long aadharNumber,String docsUrl, UserRole role) {
         super();
         if (firstName == null || firstName.isBlank()) throw new IllegalArgumentException("First name is required");
         if (lastName == null || lastName.isBlank()) throw new IllegalArgumentException("Last name is required");
@@ -68,10 +87,14 @@ public class UserDetail extends AuditDetail {
         this.address = address;
         this.dob = dob;
         this.aadharNumber = aadharNumber;
-        this.photo = photo;
+        this.docsUrl = docsUrl;
+        this.role = role;
     }
 
-
+    public String getFullName() {
+        return String.join(" ", firstName, middleName != null ? middleName : "", lastName).trim();
+    }
+    
     public void setStatus(String status) {
         this.status = status;
     }
@@ -94,10 +117,6 @@ public class UserDetail extends AuditDetail {
 
     public void setAadharNumber(Long aadharNumber) {
         this.aadharNumber = aadharNumber;
-    }
-
-    public void setPhoto(byte[] photo) {
-        this.photo = photo;
     }
 
     public void setFirstName(String firstName) {
@@ -154,11 +173,27 @@ public class UserDetail extends AuditDetail {
      return String.join(" ", firstName, lastName);
     }
 
-    public byte[] getPhoto() {
-        return photo;
+
+
+    public void setDocsUrl(String docsUrl) {
+        this.docsUrl = docsUrl;
     }
 
     public String getStatus() {
         return status;
+    }
+
+    // Add getter and setter for role so Jackson can (de)serialize it
+    public UserRole getRole() {
+        return role;
+    }
+
+    @JsonProperty("role")
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+
+    public String getDocsUrl() {
+        return docsUrl;
     }
 }

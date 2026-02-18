@@ -1,11 +1,13 @@
 package com.onlinevoting.model;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @MappedSuperclass
 @Getter
+@Setter
 public class AuditDetail {
     private String createdBy;
     private LocalDateTime createdDate;

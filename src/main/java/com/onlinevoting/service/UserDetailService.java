@@ -1,13 +1,5 @@
 package com.onlinevoting.service;
 
-import com.onlinevoting.constants.EmailConstants;
-import com.onlinevoting.dto.UserDetailDTO;
-import com.onlinevoting.enums.Status;
-import com.onlinevoting.model.UserDetail;
-import com.onlinevoting.repository.UserDetailRepository;
-
-import lombok.extern.slf4j.Slf4j;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -19,6 +11,17 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.onlinevoting.constants.EmailConstants;
+import com.onlinevoting.dto.BaseDTO;
+import com.onlinevoting.dto.UserDetailDTO;
+import com.onlinevoting.dto.UserProfileUpdateDTO;
+import com.onlinevoting.enums.Status;
+import com.onlinevoting.model.UserDetail;
+import com.onlinevoting.repository.UserDetailRepository;
+import com.onlinevoting.util.UserContextHelper;
+
+import lombok.extern.slf4j.Slf4j;
+
 @Service
 @Slf4j
 public class UserDetailService {
@@ -28,6 +31,8 @@ public class UserDetailService {
 
      @Autowired
      private EmailService emailService;
+
+     private UserContextHelper userContextHelper;
 
      public UserDetail saveUser(UserDetail userDetail) {
           var emailId = userDetail.getEmailId();
@@ -40,20 +45,31 @@ public class UserDetailService {
           UserDetail newUserDetail = new UserDetail(userDetail.getFirstName(), userDetail.getLastName(),
                     userDetail.getMiddleName(), userDetail.getEmailId(), userDetail.getPhoneNo(),
                     userDetail.getAddress(),
-                    userDetail.getDob(), userDetail.getAadharNumber(), userDetail.getPhoto());
+                    userDetail.getDob(), userDetail.getAadharNumber(), userDetail.getDocsUrl(), userDetail.getRole());
 
           newUserDetail.setActive(false);
           newUserDetail.setStatus(Status.PENDING.getDisplayName());
 
           UserDetail uDetails = userDetailRepository.save(newUserDetail);
           // Send welcome email
-          // try {
-          //      emailService.sendEmailWithTemplate(userDetail.getEmailId(), EmailConstants.WELCOME_SUBJECT,
-          //                EmailConstants.USER_CREATE_TEMPLATE, Map.of("name", userDetail.getFirstName()));
-          // } catch (Exception e) {
-          //      e.printStackTrace();
-          // }
+          try {
+               emailService.sendEmailWithTemplate(userDetail.getEmailId(), EmailConstants.WELCOME_SUBJECT,
+                         EmailConstants.USER_CREATE_TEMPLATE, Map.of("name", userDetail.getFirstName()));
+          } catch (Exception e) {
+               e.printStackTrace();
+          }
           return uDetails;
+     }
+
+     public List<UserDetail> findUsersByPhone(String phone) {
+          return userDetailRepository.findByPhoneNo(phone);
+     }
+
+     public UserDetail findById(Long id) {
+          return userDetailRepository.findById(id).orElse(null); 
+     }
+     public List<UserDetail> findUsersByEmail(String email) {
+          return userDetailRepository.findByEmail(email);
      }
      
      public void approveUser(Long id, String status) {
@@ -121,9 +137,59 @@ public class UserDetailService {
     } catch (Exception e) {
         log.error("Failed to send account activation email", e);
     }
-}
+     }
+
+     public UserProfileUpdateDTO getUserProfile() {
+          UserDetail  detail=  userDetailRepository.findByEmailId(userContextHelper.getCurrentUserEmail());
+          if(detail == null) {
+               throw new IllegalArgumentException("User with account for email " + userContextHelper.getCurrentUserEmail() + " does not exist.");
+          }
+          return mapToUserProfileUpdateDTO(detail);
+     }
+
+     public UserProfileUpdateDTO getUserProfileByEmail(String emailId) {
+          UserDetail  detail=  userDetailRepository.findByEmailId(emailId);
+          if(detail == null) {
+               throw new IllegalArgumentException("User with account for email " + emailId + " does not exist.");
+          }
+          return mapToUserProfileUpdateDTO(detail);
+     }
+
+     private UserProfileUpdateDTO mapToUserProfileUpdateDTO(UserDetail detail) {
+          UserProfileUpdateDTO profile = new UserProfileUpdateDTO();
+          profile.setUserId(detail.getId());
+          profile.setFirstName(detail.getFirstName());
+          profile.setLastName(detail.getLastName());
+          profile.setMiddleName(detail.getMiddleName());
+          profile.setPhoneNo(detail.getPhoneNo());
+          profile.setAddressId(detail.getAddress().getId());
+          profile.setEmailId(detail.getEmailId());
+          profile.setRoleId(detail.getRole().getId());
+          profile.setCountryId(detail.getAddress().getCountryId().getId());
+          profile.setStateId(detail.getAddress().getStateId().getId());
+          profile.setCityId(detail.getAddress().getCityId().getId());
+          profile.setDob(detail.getDob().toString());
+          profile.setAadharNumber(detail.getAadharNumber().toString());
+          profile.setDocsUrl(detail.getDocsUrl());
+          profile.setStatus(detail.getStatus());
+          profile.setStreet(detail.getAddress().getStreet());
+          profile.setZipCode(detail.getAddress().getZipCode());
+          profile.setProfileImageUrl(detail.getDocsUrl());
+          // Set display names
+          profile.setRoleName(detail.getRole().getName());
+          profile.setCountryName(detail.getAddress().getCountryId().getName());
+          profile.setStateName(detail.getAddress().getStateId().getName());
+          profile.setCityName(detail.getAddress().getCityId().getName());
+          
+          return profile;
+     }
+
      public UserDetail getUserByEmail(String email) {
-          return userDetailRepository.findByEmailId(email);
+          UserDetail  detail=  userDetailRepository.findByEmailId(email);
+          if(detail == null) {
+               throw new IllegalArgumentException("User with account for email " + email + " does not exist.");
+          }
+          return detail;
      }
 
      public UserDetail getUserById(Long id) {
@@ -135,15 +201,15 @@ public class UserDetailService {
      }
 
      public UserDetail updateUser(UserDetail userDetail) {
-          var id = userDetail.getId();
+          String emailId = userDetail.getEmailId();
 
-          Optional<UserDetail> existingUserDetail = userDetailRepository.findById(id);
+          UserDetail existingUserDetail = userDetailRepository.findByEmailId(emailId);
           
-          if (existingUserDetail.isEmpty()) {
-               throw new IllegalArgumentException("User with account for ID " + id + " does not exist.");
+          if (existingUserDetail == null) {
+               throw new IllegalArgumentException("User with account for email " + emailId + " does not exist.");
           }
 
-          UserDetail user = existingUserDetail.get();
+          UserDetail user = existingUserDetail;
           user.setFirstName(userDetail.getFirstName());
           user.setLastName(userDetail.getLastName());
           user.setMiddleName(userDetail.getMiddleName());
@@ -151,10 +217,22 @@ public class UserDetailService {
           user.setAddress(userDetail.getAddress());
           user.setDob(userDetail.getDob());
           user.setAadharNumber(userDetail.getAadharNumber());
-          user.setPhoto(userDetail.getPhoto());
+          user.setDocsUrl(userDetail.getDocsUrl());
+          user.setRole(userDetail.getRole());
+          // TO Approve again after profile update
+          user.setActive(false);
+          user.setStatus(Status.PENDING.getDisplayName());
+      
+          UserDetail detail=  userDetailRepository.save(user);
 
-          return userDetailRepository.save(user);
-          
+          // Send update profile email
+          try {
+               emailService.sendEmailWithTemplate(userDetail.getEmailId(), EmailConstants.UPDATE_PROFILE_SUBJECT,
+                         EmailConstants.UPDATE_PROFILE_TEMPLATE, Map.of("name", userDetail.getFirstName()));
+          } catch (Exception e) {
+               e.printStackTrace();
+          }
+          return detail;
      }
 
      public void deleteUser(Long id) {
@@ -176,13 +254,13 @@ public class UserDetailService {
           if(status == null) {
                throw new IllegalArgumentException("Status parameter is required.");
           } else if (status.equals(Status.APPROVED.getDisplayName())) {
-               List<Object[]> newuserDetails = userDetailRepository.findByIsActiveAndStatus(Boolean.TRUE,status);
+               List<Object[]> newuserDetails = userDetailRepository.findByRoleIdAndIsActiveAndStatus(3L, Boolean.TRUE, status);
                for (Object[] obj : newuserDetails) {
                     userDetails.add(createUserDetailDTO(obj));
                }
           }else if (status.equals(Status.REJECTED.getDisplayName()) || status.equals(Status.PENDING.getDisplayName())) {
-                  List<Object[]> newuserDetails = userDetailRepository.findByIsActiveAndStatus(Boolean.FALSE,status);
-               for (Object[] obj : newuserDetails) {
+                  List<Object[]> newuserDetails = userDetailRepository.findByRoleIdAndIsActiveAndStatus(3L, Boolean.FALSE, status);
+                  for (Object[] obj : newuserDetails) {
                     userDetails.add(createUserDetailDTO(obj));
                }
           }
@@ -190,7 +268,94 @@ public class UserDetailService {
           return userDetails;
      }
 
-     private UserDetailDTO createUserDetailDTO(Object[] obj) {
-          return new UserDetailDTO((String) obj[0], (String) obj[1], (String) obj[2], String.valueOf(obj[3]), (String) obj[4]);
+     
+     public List<UserDetailDTO> getAllPendingApprovalManagement(String status, String orderBy, String order ) {
+          List<UserDetailDTO> userDetails = new ArrayList<>();
+         
+          if(status == null) {
+               throw new IllegalArgumentException("Status parameter is required.");
+          } else if (status.equals(Status.APPROVED.getDisplayName())) {
+               List<Object[]> newuserDetails = userDetailRepository.findByIsActiveAndStatus(Boolean.TRUE, status);
+               for (Object[] obj : newuserDetails) {
+                    if(createUserDetailDTO(obj, 3L)!=null) {
+                          userDetails.add(createUserDetailDTO(obj, 3L));
+                    }
+               
+               }
+          }else if (status.equals(Status.REJECTED.getDisplayName()) || status.equals(Status.PENDING.getDisplayName())) {
+                  List<Object[]> newuserDetails = userDetailRepository.findByIsActiveAndStatus( Boolean.FALSE, status);
+                  for (Object[] obj : newuserDetails) {
+                       if(createUserDetailDTO(obj, 3L)!=null) {
+                          userDetails.add(createUserDetailDTO(obj, 3L));
+                    }               }
+          }
+
+          return userDetails;
+     }
+
+      private UserDetailDTO createUserDetailDTO(Object[] obj,Long roleId) {
+          UserDetailDTO detailDTO = null;
+            String dobStr = null;
+            if((Long)obj[9]!=roleId) {
+           
+            if (obj[5] != null && obj[5] instanceof java.sql.Date) {
+                 dobStr = obj[5].toString(); // or use a formatter if you want a specific format
+            } else if (obj[5] != null) {
+                 dobStr = obj[5].toString();
+            }
+            String adharStr = obj[6] != null ? obj[6].toString() : null;
+             detailDTO = new UserDetailDTO(
+               String.valueOf(obj[0]), // id
+                 (String) obj[1], // firstName
+                 (String) obj[2], // lastName
+                 (String) obj[3], // emailid
+                 (String) obj[4], // phoneNumber
+                 dobStr,          // dateOfBirth as String
+                 adharStr,        // aadharNumber as String
+                 (String) obj[7]  ,
+                 (String) obj[8]  // profilePhoto
+            );
+          }
+          return detailDTO;
+      }
+
+       private UserDetailDTO createUserDetailDTO(Object[] obj) {
+          UserDetailDTO detailDTO = null;
+            String dobStr = null;
+           
+            if (obj[5] != null && obj[5] instanceof java.sql.Date) {
+                 dobStr = obj[5].toString(); // or use a formatter if you want a specific format
+            } else if (obj[5] != null) {
+                 dobStr = obj[5].toString();
+            }
+            String adharStr = obj[6] != null ? obj[6].toString() : null;
+             detailDTO = new UserDetailDTO(
+               String.valueOf(obj[0]), // id
+                 (String) obj[1], // firstName
+                 (String) obj[2], // lastName
+                 (String) obj[3], // emailid
+                 (String) obj[4], // phoneNumber
+                 dobStr,          // dateOfBirth as String
+                 adharStr,        // aadharNumber as String
+                 (String) obj[7]  ,
+                 (String) obj[8]  // profilePhoto
+            );
+          return detailDTO;
+      }
+
+      public List<BaseDTO> getAllUsersByRole(Long roleId) {
+          List<BaseDTO> userDetails = new ArrayList<>();
+          log.info("Fetching users with role ID: {}", roleId);
+          List<Object[]> newuserDetails = userDetailRepository.findByIsActiveAndStatusAndRoleId(
+               Boolean.TRUE, Status.APPROVED.getDisplayName(), roleId);
+          for (Object[] obj : newuserDetails) {
+               userDetails.add(new BaseDTO(
+                    obj[0] != null ? Long.parseLong(obj[0].toString()) : null,
+                    obj[1] != null ? obj[1].toString() : null
+               ));
+          }
+          log.info("Found {} users with role ID: {}", userDetails.size(), roleId);
+          return userDetails;
      }
 }
+ 

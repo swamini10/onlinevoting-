@@ -1,0 +1,124 @@
+{
+  "createElectionRequest": {
+    "electionName": "General Assembly Elections 2024",
+    "electionDate": "2024-06-15",
+    "resultDate": "2024-06-18",
+    "country": {
+      "id": 1
+    },
+    "state": {
+      "id": 2
+    },
+    "city": {
+      "id": 3
+    },
+    "officer": {
+      "id": 5
+    },
+    "status": "SCHEDULED"
+  },
+  
+  "createElectionRequest2": {
+    "electionName": "Municipal Corporation Elections 2024",
+    "electionDate": "2024-07-20",
+    "resultDate": "2024-07-23",
+    "country": {
+      "id": 1
+    },
+    "state": {
+      "id": 2
+    },
+    "city": {
+      "id": 4
+    },
+    "officer": {
+      "id": 6
+    },
+    "status": "ACTIVE"
+  },
+
+  "createElectionRequest3": {
+    "electionName": "State Assembly By-Elections 2024",
+    "electionDate": "2024-08-10",
+    "resultDate": "2024-08-12",
+    "country": {
+      "id": 1
+    },
+    "state": {
+      "id": 3
+    },
+    "city": {
+      "id": 5
+    },
+    "officer": {
+      "id": 7
+    },
+    "status": "PENDING"
+  },
+
+  "updateElectionRequest": {
+    "electionName": "Updated General Assembly Elections 2024",
+    "electionDate": "2024-06-16",
+    "resultDate": "2024-06-19",
+    "country": {
+      "id": 1
+    },
+    "state": {
+      "id": 2
+    },
+    "city": {
+      "id": 3
+    },
+    "officer": {
+      "id": 8
+    },
+    "status": "ACTIVE"
+  },
+
+  "testCases": {
+    "validationErrors": {
+      "missingElectionName": {
+        "electionDate": "2024-06-15",
+        "resultDate": "2024-06-18",
+        "country": {"id": 1},
+        "state": {"id": 2},
+        "city": {"id": 3},
+        "officer": {"id": 5},
+        "status": "SCHEDULED"
+      },
+      "missingElectionDate": {
+        "electionName": "Test Election",
+        "resultDate": "2024-06-18",
+        "country": {"id": 1},
+        "state": {"id": 2},
+        "city": {"id": 3},
+        "officer": {"id": 5},
+        "status": "SCHEDULED"
+      },
+      "emptyElectionName": {
+        "electionName": "",
+        "electionDate": "2024-06-15",
+        "resultDate": "2024-06-18",
+        "country": {"id": 1},
+        "state": {"id": 2},
+        "city": {"id": 3},
+        "officer": {"id": 5},
+        "status": "SCHEDULED"
+      }
+    }
+  },
+
+  "curlExamples": {
+    "createElection": "curl -X POST http://localhost:8080/v1/election -H \"Content-Type: application/json\" -d '{\"electionName\":\"General Assembly Elections 2024\",\"electionDate\":\"2024-06-15\",\"resultDate\":\"2024-06-18\",\"country\":{\"id\":1},\"state\":{\"id\":2},\"city\":{\"id\":3},\"officer\":{\"id\":5},\"status\":\"SCHEDULED\"}'",
+    
+    "getElectionById": "curl -X GET http://localhost:8080/v1/election/1",
+    
+    "getAllElections": "curl -X GET http://localhost:8080/v1/election",
+    
+    "getElectionsByStatus": "curl -X GET http://localhost:8080/v1/election/status/ACTIVE",
+    
+    "updateElection": "curl -X PUT http://localhost:8080/v1/election/1 -H \"Content-Type: application/json\" -d '{\"electionName\":\"Updated Election\",\"electionDate\":\"2024-06-16\",\"resultDate\":\"2024-06-19\",\"country\":{\"id\":1},\"state\":{\"id\":2},\"city\":{\"id\":3},\"officer\":{\"id\":8},\"status\":\"ACTIVE\"}'",
+    
+    "deleteElection": "curl -X DELETE http://localhost:8080/v1/election/1"
+  }
+}
