@@ -13,7 +13,7 @@ CREATE TABLE `user_detail` (
   `last_name` varchar(50) NOT NULL,
   `middle_name` varchar(50) DEFAULT NULL,
   `phone_no` varchar(10) DEFAULT NULL,
-  `docs_url` varchar(512) DEFAULT NULL,
+  `photo` longblob,
   `status` varchar(20) DEFAULT NULL,
   `role_id` bigint NOT NULL,
   PRIMARY KEY (`id`),

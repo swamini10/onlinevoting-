@@ -18,8 +18,8 @@ public class Election extends AuditDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "election_id")
+    private Long electionId;
 
     @NotBlank(message = "Election name is mandatory")
     @Column(name = "election_name", nullable = false, length = 255)
@@ -60,14 +60,4 @@ public class Election extends AuditDetail {
     @NotBlank(message = "Status is mandatory")
     @Column(name = "status", nullable = false, length = 50)
     private String status;
-
-    @Column(name = "note", nullable = false, length = 50)
-    private String note;
-
-    @Column(name = "is_publish", nullable = false)
-    private Boolean isPublish;
-
-    @Column(name = "is_result_publish", nullable = false ,columnDefinition = "bit(1) default b'0'")
-    private Boolean isResultPublish;
-
 }

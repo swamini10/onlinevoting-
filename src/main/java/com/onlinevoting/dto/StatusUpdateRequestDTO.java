@@ -16,8 +16,6 @@ public class StatusUpdateRequestDTO {
     private String dateOfBirth;
     private String aadharNumber;
     private String status;
-    private String note;
-    private Boolean isPublish;
 
     
 }

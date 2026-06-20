@@ -1,16 +1,16 @@
 package com.onlinevoting.handler;
 
-import java.util.Collections;
+import com.onlinevoting.dto.ApiResponse;
+import com.onlinevoting.exception.UserNotFoundException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 
-import com.onlinevoting.dto.ApiResponse;
-import com.onlinevoting.exception.UserNotFoundException;
+import java.util.Collections;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -44,6 +44,5 @@ public class GlobalExceptionHandler {
         Collections.singletonList(ex.getMessage()));
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }   
-
 
 }

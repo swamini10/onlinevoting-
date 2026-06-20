@@ -11,11 +11,4 @@ import com.onlinevoting.model.Election;
 public interface ElectionRepository extends JpaRepository<Election, Long> {
 
     public List<Election> findByStatus(String status);
-
-    public List<Election> findByStatusAndIsActiveTrue(String status);
-    
-    public List<Election> findByIsPublishTrueAndIsResultPublishFalseAndIsActiveTrue();
-
-    public List<Election> findByIsPublishTrueAndIsResultPublishTrueAndIsActiveTrue();
-
 }
